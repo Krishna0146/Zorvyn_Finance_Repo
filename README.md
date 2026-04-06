@@ -1,16 +1,187 @@
-# React + Vite
+# 💰 Zorvyn Finance – React Financial Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive **financial dashboard frontend** built using **React + Vite**, designed to help users track income, expenses, savings, investments, and more — all without any backend.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+### 📊 Dashboard
+- Summary cards:
+  - Total Balance
+  - Total Income
+  - Total Expenses
+  - Savings
+  - Investment Value
+- Charts:
+  - Income vs Expenses (line chart)
+  - Expense categories (bar chart)
+  - Income distribution (donut chart)
+- Highlights:
+  - Highest & lowest expenses
+  - Top income source
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+### 💵 Income Management
+- Add, edit, delete income entries
+- Categorized income tracking
+- Visual charts for income distribution
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+### 💸 Expenses with Limits
+- Track expenses by category
+- Set monthly limits
+- Progress bars for usage
+- Alerts when limits are exceeded
+
+---
+
+### 🏦 EMIs / Loans / Fees
+- Manage loans and EMI schedules
+- Track due dates and payments
+- Fee tracking (paid / pending)
+- Overdue alerts with visual indicators
+
+---
+
+### 🎯 Savings Goals
+- Create savings targets
+- Track progress with percentage bars
+- Summary of total saved vs target
+
+---
+
+### 📈 Investments
+- Track stocks, mutual funds, SIPs
+- Calculate:
+  - Current value (mock)
+  - Profit / Loss
+- Portfolio visualization (line chart)
+
+---
+
+### ✈️ Trip Expense Tracker
+- Individual & group trips
+- Add expenses inside trips
+- Split expenses among users
+- Show who owes whom
+- Compare trip costs visually
+
+---
+
+### 👨‍👩‍👧 Admin / User Control
+- Role-based UI:
+  - Admin (parent)
+  - User (child)
+- Admin features:
+  - Manage users
+  - Set spending limits
+  - View dashboards
+- User restrictions:
+  - Limited control
+  - Alerts on exceeding limits
+
+---
+
+### 🌗 Light / Dark Mode
+- Smooth toggle between themes
+- Finance-themed colors (green, blue)
+- Animated transitions
+
+---
+
+### 🔍 Filters, Search & Sorting
+- Date range filters
+- Category filters
+- Search by name/description
+- Sorting:
+  - Amount
+  - Date
+
+---
+
+### 🔔 Smart Alerts
+- Expense limit exceeded
+- EMI/fee overdue
+- Savings goal achieved
+- Investment performance alerts
+- Auto-dismiss + manual close
+
+---
+
+## 🛠️ Tech Stack
+
+- ⚛️ React 18+
+- ⚡ Vite
+- 🎨 CSS / Tailwind (or CSS variables)
+- 🔀 React Router DOM
+- 💾 sessionStorage (no backend)
+
+---
+
+## 📁 Project Structure
+fintrack/
+│
+├── public/
+│
+├── src/
+│ ├── components/
+│ │ ├── Sidebar.jsx
+│ │ ├── Header.jsx
+│ │ ├── Card.jsx
+│ │ ├── Chart.jsx
+│ │ ├── Toast.jsx
+│ │ ├── ThemeToggle.jsx
+│ │ └── Filters.jsx
+│ │
+│ ├── pages/
+│ │ ├── Dashboard.jsx
+│ │ ├── Income.jsx
+│ │ ├── Expenses.jsx
+│ │ ├── EMIsLoans.jsx
+│ │ ├── Fees.jsx
+│ │ ├── Savings.jsx
+│ │ ├── Investments.jsx
+│ │ ├── Trips.jsx
+│ │ ├── Admin.jsx
+│ │ └── Settings.jsx
+│ │
+│ ├── hooks/
+│ │ ├── useSessionStorage.js
+│ │ └── useFinanceData.js
+│ │
+│ ├── utils/
+│ │ ├── calculations.js
+│ │ ├── filters.js
+│ │ └── constants.js
+│ │
+│ ├── styles/
+│ │ └── theme.css
+│ │
+│ ├── App.jsx
+│ ├── main.jsx
+│
+└── package.json
+
+## 📦 Installation & Setup
+
+### 1 Clone the repository
+
+    git clone 
+    cd Zorvyn_Finance_Repo
+
+
+### 2 Install Dependencies
+     yarn install
+
+### 3 Run
+       
+       yarn start
+ ### runs on 
+       http://localhost:3000
+
+
+## output screen
+<img width="1900" height="867" alt="image" src="https://github.com/user-attachments/assets/91f52aef-0f5f-4e04-b51e-997765a0f107" />

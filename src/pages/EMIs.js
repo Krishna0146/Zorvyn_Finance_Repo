@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, CreditCard, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, CreditCard, AlertCircle, Search, ArrowUpDown } from 'lucide-react';
 import { toast } from 'sonner';
 import PageHeader from '../components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEMIs } from '../hooks/useFinanceData';
 import { formatCurrency, formatDate, isOverdue } from '../utils/helpers';
 import storageService from '../services/storageService';
@@ -23,6 +24,11 @@ const EMIsPage = () => {
     startDate: new Date().toISOString().split('T')[0],
     nextDueDate: ''
   });
+
+  // Search & Sort state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const currentUser = storageService.getCurrentUser();
 
@@ -50,6 +56,23 @@ const EMIsPage = () => {
 
   const totalEMI = emis.reduce((sum, emi) => sum + emi.emiAmount, 0);
   const overdueEMIs = emis.filter(emi => isOverdue(emi.nextDueDate));
+
+  // Search + Sort
+  const filteredAndSortedEMIs = emis
+    .filter(emi => emi.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => {
+      let valA, valB;
+      if (sortBy === 'name') { valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); }
+      else if (sortBy === 'emiAmount') { valA = a.emiAmount; valB = b.emiAmount; }
+      else if (sortBy === 'totalAmount') { valA = a.totalAmount; valB = b.totalAmount; }
+      else if (sortBy === 'nextDueDate') { valA = a.nextDueDate; valB = b.nextDueDate; }
+      else if (sortBy === 'interestRate') { valA = a.interestRate; valB = b.interestRate; }
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+  const toggleSortOrder = () => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
 
   return (
     <div className="space-y-6" data-testid="emis-page">
@@ -186,14 +209,60 @@ const EMIsPage = () => {
         )}
       </div>
 
+      {/* Search & Sort */}
+      <div className="bg-card border border-border rounded-lg p-4 md:p-6">
+        <div className="flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[200px] relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by loan name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+              data-testid="emi-search-input"
+            />
+          </div>
+          <div className="flex gap-2">
+            <div className="min-w-[180px]">
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger data-testid="emi-sort-select">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="emiAmount">EMI Amount</SelectItem>
+                  <SelectItem value="totalAmount">Total Amount</SelectItem>
+                  <SelectItem value="interestRate">Interest Rate</SelectItem>
+                  <SelectItem value="nextDueDate">Next Due Date</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleSortOrder}
+              title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+              data-testid="emi-sort-order-btn"
+            >
+              <ArrowUpDown className={cn("w-4 h-4 transition-transform", sortOrder === 'desc' && 'rotate-180')} />
+            </Button>
+          </div>
+        </div>
+        {searchQuery && (
+          <p className="text-sm text-muted-foreground mt-3">
+            {filteredAndSortedEMIs.length} result{filteredAndSortedEMIs.length !== 1 ? 's' : ''} for "{searchQuery}"
+          </p>
+        )}
+      </div>
+
       {/* EMIs List */}
       <div className="grid grid-cols-1 gap-4">
-        {emis.length === 0 ? (
+        {filteredAndSortedEMIs.length === 0 ? (
           <div className="bg-card border border-border rounded-lg p-8 text-center text-muted-foreground">
-            No EMIs or loans yet. Add one to get started!
+            {searchQuery ? `No EMIs found matching "${searchQuery}".` : 'No EMIs or loans yet. Add one to get started!'}
           </div>
         ) : (
-          emis.map((emi) => {
+          filteredAndSortedEMIs.map((emi) => {
             const overdue = isOverdue(emi.nextDueDate);
             return (
               <div

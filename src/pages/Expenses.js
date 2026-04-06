@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, TrendingDown, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, TrendingDown, AlertTriangle, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 import PageHeader from '../components/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,11 @@ const ExpensesPage = () => {
     category: 'Food',
     date: new Date().toISOString().split('T')[0]
   });
+
+  // Filter state
+  const [filterCategory, setFilterCategory] = useState('All');
+  const [filterFrom, setFilterFrom] = useState('');
+  const [filterTo, setFilterTo] = useState('');
 
   const currentUser = storageService.getCurrentUser();
 
@@ -66,6 +71,14 @@ const ExpensesPage = () => {
     setFormData({ name: '', amount: '', category: 'Food', date: new Date().toISOString().split('T')[0] });
     setIsDialogOpen(false);
   };
+
+  // Filtered expenses
+  const filteredExpenses = expenses.filter(exp => {
+    const matchesCategory = filterCategory === 'All' || exp.category === filterCategory;
+    const matchesFrom = !filterFrom || exp.date >= filterFrom;
+    const matchesTo = !filterTo || exp.date <= filterTo;
+    return matchesCategory && matchesFrom && matchesTo;
+  });
 
   const totalExpenses = calculateTotal(expenses);
 
@@ -200,6 +213,59 @@ const ExpensesPage = () => {
         </div>
       )}
 
+      {/* Filters */}
+      <div className="bg-card border border-border rounded-lg p-4 md:p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <h3 className="text-base font-semibold">Filter Expenses</h3>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <div className="flex-1 min-w-[160px]">
+            <Label className="mb-1 block text-sm">Category</Label>
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger data-testid="filter-category-select">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All</SelectItem>
+                {EXPENSE_CATEGORIES.map(cat => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex-1 min-w-[140px]">
+            <Label className="mb-1 block text-sm">From</Label>
+            <Input
+              type="date"
+              value={filterFrom}
+              onChange={(e) => setFilterFrom(e.target.value)}
+              data-testid="filter-from-input"
+            />
+          </div>
+          <div className="flex-1 min-w-[140px]">
+            <Label className="mb-1 block text-sm">To</Label>
+            <Input
+              type="date"
+              value={filterTo}
+              onChange={(e) => setFilterTo(e.target.value)}
+              data-testid="filter-to-input"
+            />
+          </div>
+          {(filterCategory !== 'All' || filterFrom || filterTo) && (
+            <div className="flex items-end">
+              <Button
+                variant="outline"
+                onClick={() => { setFilterCategory('All'); setFilterFrom(''); setFilterTo(''); }}
+                data-testid="clear-filters-btn"
+              >
+                Clear
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Expenses List */}
       <div className="bg-card border border-border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
@@ -214,14 +280,14 @@ const ExpensesPage = () => {
               </tr>
             </thead>
             <tbody>
-              {expenses.length === 0 ? (
+              {filteredExpenses.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="text-center p-8 text-muted-foreground">
                     No expenses yet. Add one to get started!
                   </td>
                 </tr>
               ) : (
-                expenses.map((item) => (
+                filteredExpenses.map((item) => (
                   <tr key={item.id} className="border-t border-border hover:bg-accent transition-colors duration-200">
                     <td className="p-4">{item.name}</td>
                     <td className="p-4">

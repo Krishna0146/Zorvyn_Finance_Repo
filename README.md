@@ -169,7 +169,7 @@ fintrack/
 
 ### 1 Clone the repository
 
-    git clone 
+    git clone https://github.com/Krishna0146/Zorvyn_Finance_Repo.git
     cd Zorvyn_Finance_Repo
 
 
